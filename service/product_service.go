@@ -10,17 +10,17 @@ import (
 type IProductService interface {
 	Add(productDto dto.ProductDto) error
 	DeleteById(productId int64) error
-	GetById(productId int64) ([]domain.Product, error)
+	GetById(productId int64) (domain.Product, error)
 	UpdatePrice(productId int64, price float32) error
 	GetAllProducts() []domain.Product
 	GetByStore(storeName string) []domain.Product
 }
 
 type ProductService struct {
-	productRepository repository.ProductRepository
+	productRepository repository.IProductRepository
 }
 
-func NewProductService(productRepository repository.ProductRepository) IProductService {
+func NewProductService(productRepository repository.IProductRepository) IProductService {
 	return &ProductService{
 		productRepository: productRepository,
 	}
@@ -28,7 +28,7 @@ func NewProductService(productRepository repository.ProductRepository) IProductS
 
 func validateProductCreate(productDto dto.ProductDto) error {
 	if productDto.Discount > 70 {
-		errors.New("Discount can not be greater than 70")
+		return errors.New("Discount can not be greater than 70")
 	}
 	return nil
 }
@@ -46,18 +46,18 @@ func (pService ProductService) Add(productDto dto.ProductDto) error {
 	})
 }
 
-func (pService ProductService) DeleteById(productId int64) error {
+func (pService *ProductService) DeleteById(productId int64) error {
 	return pService.productRepository.DeleteById(productId)
 }
-func (pService ProductService) GetById(productId int64) ([]domain.Product, error) {
-	return pService.GetById(productId)
+func (pService *ProductService) GetById(productId int64) (domain.Product, error) {
+	return pService.productRepository.GetProductById(productId)
 }
-func (pService ProductService) UpdatePrice(productId int64, price float32) error {
+func (pService *ProductService) UpdatePrice(productId int64, price float32) error {
 	return pService.UpdatePrice(productId, price)
 }
-func (pService ProductService) GetAllProducts() []domain.Product {
-	return pService.GetAllProducts()
+func (pService *ProductService) GetAllProducts() []domain.Product {
+	return pService.productRepository.GetAllProducts()
 }
-func (pService ProductService) GetByStore(storeName string) []domain.Product {
+func (pService *ProductService) GetByStore(storeName string) []domain.Product {
 	return pService.productRepository.GetAllProductsByStore(storeName)
 }

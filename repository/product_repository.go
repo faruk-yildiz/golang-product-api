@@ -36,7 +36,7 @@ func (productRepository *ProductRepository) AddProduct(product domain.Product) e
 
 	addNewProduct, err := productRepository.dbPool.Exec(ctx, addProductSql, product.Name, product.Price, product.Discount, product.Store)
 	if err != nil {
-		log.Errorf("Error when adding product to table ", err)
+		log.Errorf("Error when adding product to table", err)
 		return err
 	}
 	log.Info(fmt.Printf("Product added with %v", addNewProduct))
